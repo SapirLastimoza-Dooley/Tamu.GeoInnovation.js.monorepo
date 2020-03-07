@@ -9,6 +9,36 @@
         <h4>Make address data work for you.</h4>
       </div>
     </div>
+
+    <div class="column6">
+      <tamu-gisc-interactive-geocoder></tamu-gisc-interactive-geocoder>
+
+      <div class="card">
+        <form [formGroup]="geocodeForm" (ngSubmit)="test()">
+          <div class="form-section">
+            <div class="form-section-toolbar">
+              <div class="form-section-name">Try Our Geocoder</div>
+            </div>
+
+            <div class="form-section-body">
+              <div class="form-collection row">
+                <tamu-gisc-textbox type="text" placeholder="Address 1" formControlName="streetAddress" floatLabel="true"></tamu-gisc-textbox>
+              </div>
+
+              <div class="form-collection row">
+                <tamu-gisc-textbox type="text" placeholder="City" formControlName="city" floatLabel="true"></tamu-gisc-textbox>
+                <tamu-gisc-textbox type="text" placeholder="State" formControlName="state" floatLabel="true"></tamu-gisc-textbox>
+                <tamu-gisc-textbox type="number" placeholder="Zip" formControlName="zip" floatLabel="true"></tamu-gisc-textbox>
+              </div>
+
+              <div class="form-collection row">
+                <tamu-gisc-button type="submit" value="Geocode" [disabled]="!geocodeForm.valid"></tamu-gisc-button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -17,7 +47,7 @@
     <div class="column8 flex flex-column text-content text-content--left">
       <h2>Location Is Key</h2>
       <!-- <h4>Data that's easy to trust</h4> -->
-      <p>Geocoding is the process of transforming a normal human-readable address and into a pair of Earth latitude and longitude values. The applications of geocoding are many from simple parsing routing endpoints for directions to address validation and analysis.</p>
+      <p>Geocoding is the process of transforming a normal human-readable address and into a pair of Earth latitude and longitude values. The applications for geocoding are many from simple parsing routing endpoints for directions to address validation and analysis.</p>
     </div>
   </div>
 </section>

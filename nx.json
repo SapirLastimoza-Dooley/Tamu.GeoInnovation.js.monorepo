@@ -298,6 +298,15 @@
     },
     "common-utils-device-guards": {
       "tags": []
+    },
+    "oidc-admin-angular-e2e": {
+      "tags": []
+    },
+    "oidc-admin-angular": {
+      "tags": []
+    },
+    "oidc-admin": {
+      "tags": []
     }
   }
 }

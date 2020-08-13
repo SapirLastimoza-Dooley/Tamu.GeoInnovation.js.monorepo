@@ -1,4 +1,5 @@
 import { Req } from '@nestjs/common';
+import { Exclude } from 'class-transformer';
 import { Request } from 'express';
 import {
   BeforeUpdate,
@@ -266,7 +267,8 @@ export class User extends GuidIdentity {
 
   @Column({
     type: 'varchar',
-    nullable: true
+    nullable: true,
+    select: false
   })
   password: string;
 

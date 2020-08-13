@@ -307,6 +307,9 @@
     },
     "oidc-admin": {
       "tags": []
+    },
+    "oidc-admin-data-access": {
+      "tags": []
     }
   }
 }

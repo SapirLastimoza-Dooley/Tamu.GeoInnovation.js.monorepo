@@ -383,11 +383,9 @@ export class AccessToken implements IRequiredEntityAttrs {
     type: 'datetime',
     nullable: true
   })
-  added?: Date;
+  added: Date;
 
-  constructor() {
-    this.added = new Date();
-  }
+  constructor() {}
 }
 
 @Entity({

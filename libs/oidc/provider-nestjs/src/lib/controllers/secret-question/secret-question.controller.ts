@@ -13,7 +13,7 @@ export class SecretQuestionController {
   }
 
   @Get()
-  async secretQuestionsGet(@Req() req: Request, @Res() res: Response) {
+  async secretQuestionsGet() {
     return this.userService.getAllSecretQuestions();
   }
 }

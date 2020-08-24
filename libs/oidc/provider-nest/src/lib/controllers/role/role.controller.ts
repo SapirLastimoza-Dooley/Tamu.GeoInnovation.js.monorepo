@@ -1,4 +1,5 @@
-import { Controller, Post, Req, Res, Get } from '@nestjs/common';
+import { Controller, Post, Req, Res, Get, Param } from '@nestjs/common';
+import { Response } from 'express';
 import { RoleService } from '../../services/role/role.service';
 
 @Controller('role')
@@ -10,13 +11,23 @@ export class RoleController {
     return this.roleService.getAllRoles();
   }
 
+  @Get(':roleGuid')
+  async specificRoleGet(@Param() params) {
+    return this.roleService.getRole(params.roleGuid);
+  }
+
   @Post()
-  async newRolePost(@Req() req) {
+  async newRolePost(@Req() req, @Res() res: Response) {
     return this.roleService.insertRole(req);
   }
 
   @Post('all')
   async newRolesPost(@Req() req) {
     return this.roleService.insertRoles(req);
+  }
+
+  @Post('update')
+  async updateRolePost(@Req() req) {
+    return this.roleService.updateRole(req);
   }
 }

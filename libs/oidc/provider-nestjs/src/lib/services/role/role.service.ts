@@ -25,6 +25,15 @@ export class RoleService {
     }
   }
 
+  public async updateRole(req: Request) {
+    const _role: Partial<Role> = {
+      level: req.body.level,
+      name: req.body.name
+    };
+    const role = this.roleRepo.create(_role);
+    return this.roleRepo.save(role);
+  }
+
   public async insertRoles(req: Request) {
     const _roles: Partial<Role>[] = [];
     req.body.roles.map((role) => {
@@ -36,6 +45,14 @@ export class RoleService {
     });
     const roles = this.roleRepo.create(_roles);
     return this.roleRepo.save(roles);
+  }
+
+  public async getRole(guid: string) {
+    return this.roleRepo.findOne({
+      where: {
+        guid: guid
+      }
+    });
   }
 
   public async getAllRoles() {

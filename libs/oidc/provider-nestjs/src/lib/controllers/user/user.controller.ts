@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Req, Res, Post } from '@nestjs/common';
+import { Controller, Get, Param, Req, Res, Post, Delete } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
 import { urlFragment, urlHas } from '../../_utils/url-utils';
@@ -12,6 +12,11 @@ export class UserController {
   @Get('all')
   async usersAllGet() {
     return this.userService.userRepo.findAllDeep();
+  }
+
+  @Delete('delete/:userGuid')
+  async userDelete(@Param() params) {
+    return this.userService.deleteUser(params.userGuid);
   }
 
   /**
@@ -345,5 +350,10 @@ export class UserController {
         });
       });
     }
+  }
+
+  @Get(':userGuid')
+  async userGet(@Param() params) {
+    return this.userService.userRepo.findByKeyDeep('email', params.userGuid);
   }
 }

@@ -242,11 +242,11 @@ export class User extends GuidIdentity {
   })
   added: Date;
 
-  @OneToOne((type) => Account, { cascade: true })
+  @OneToOne((type) => Account, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   public account: Account;
 
-  @OneToMany((type) => UserRole, (userRole) => userRole.user, { cascade: true })
+  @OneToMany((type) => UserRole, (userRole) => userRole.user, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   public userRoles: UserRole[];
 
@@ -959,7 +959,9 @@ export class SecretQuestion extends GuidIdentity {
   name: 'secret_answers'
 })
 export class SecretAnswer extends GuidIdentity {
-  @ManyToOne((type) => User)
+  @ManyToOne((type) => User, {
+    onDelete: 'CASCADE'
+  })
   user: User;
 
   @ManyToOne((type) => SecretQuestion)
@@ -1036,7 +1038,9 @@ export class UserPasswordReset extends GuidIdentity {
   name: 'password_history'
 })
 export class UserPasswordHistory extends GuidIdentity {
-  @ManyToOne((type) => User)
+  @ManyToOne((type) => User, {
+    onDelete: 'CASCADE'
+  })
   user: User;
 
   @Column({

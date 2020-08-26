@@ -1,4 +1,4 @@
-import { Controller, Post, Req, Res, Get, Param } from '@nestjs/common';
+import { Controller, Post, Req, Res, Get, Param, Patch, Delete } from '@nestjs/common';
 import { Response } from 'express';
 import { RoleService } from '../../services/role/role.service';
 
@@ -26,7 +26,12 @@ export class RoleController {
     return this.roleService.insertRoles(req);
   }
 
-  @Post('update')
+  @Delete('delete/:roleGuid')
+  async deleteRolePost(@Param() params) {
+    return this.roleService.deleteRole(params.roleGuid);
+  }
+
+  @Patch('update')
   async updateRolePost(@Req() req) {
     return this.roleService.updateRole(req);
   }

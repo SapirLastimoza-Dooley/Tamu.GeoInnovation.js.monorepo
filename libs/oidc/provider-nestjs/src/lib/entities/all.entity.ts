@@ -48,7 +48,7 @@ export interface IAccount {
   profile: string;
   picture: string;
   website: string;
-  email: string;
+  // email: string;
   gender: string;
   birthdate: string;
   zoneinfo: string;
@@ -145,11 +145,11 @@ export class Account extends GuidIdentity implements IAccount {
   })
   website: string;
 
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  email: string;
+  // @Column({
+  //   type: 'varchar',
+  //   nullable: true
+  // })
+  // email: string;
 
   @Column({
     type: 'varchar',
@@ -212,9 +212,9 @@ export class Account extends GuidIdentity implements IAccount {
       // if (user.guid) {
       //   this.guid = user.guid;
       // }
-      if (email) {
-        this.email = email;
-      }
+      // if (email) {
+      //   this.email = email;
+      // }
       if (fullName) {
         this.name = fullName;
         if (fullName.includes(' ')) {
@@ -246,7 +246,7 @@ export class User extends GuidIdentity {
   @JoinColumn()
   public account: Account;
 
-  @OneToMany((type) => UserRole, (userRole) => userRole.user, { cascade: true, onDelete: 'CASCADE' })
+  @OneToMany((type) => UserRole, (userRole) => userRole.user, { onDelete: 'CASCADE' })
   @JoinColumn()
   public userRoles: UserRole[];
 
@@ -911,7 +911,7 @@ export class UserRole extends GuidIdentity {
   @JoinColumn()
   client: ClientMetadata;
 
-  @ManyToOne((type) => User, (user) => user.userRoles)
+  @ManyToOne((type) => User, (user) => user.userRoles, { cascade: true })
   user: User;
 }
 
@@ -1076,6 +1076,7 @@ export class CommonRepo<T> extends Repository<T> {
     if (includeExludedProps === true) {
       queryBuilder.addSelect([`entity.${excludedProp}`]);
     }
+    console.log(queryBuilder.getQueryAndParameters());
     return queryBuilder.where(`entity.${key} = :${key}`, op).getOne();
   }
 
@@ -1146,7 +1147,22 @@ export class ResponseTypeRepo extends CommonRepo<ResponseType> {}
 export class TokenEndpointAuthMethodRepo extends CommonRepo<TokenEndpointAuthMethod> {}
 
 @EntityRepository(User)
-export class UserRepo extends CommonRepo<User> {}
+export class UserRepo extends CommonRepo<User> {
+  public getUserWithRoles(accountGuid: string, clientName: string) {
+    return getConnection()
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.account', 'account')
+      .leftJoinAndSelect('user.userRoles', 'userRoles')
+      .leftJoinAndSelect('userRoles.role', 'role')
+      .leftJoinAndSelect('userRoles.client', 'client')
+      .where(`account.guid = :accountGuid AND client.clientName = :clientName`, {
+        accountGuid: accountGuid,
+        clientName: clientName
+      })
+      .getOne();
+  }
+}
 
 @EntityRepository(Account)
 export class AccountRepo extends CommonRepo<Account> {}

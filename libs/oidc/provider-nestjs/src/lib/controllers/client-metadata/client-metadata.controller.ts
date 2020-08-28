@@ -87,4 +87,19 @@ export class ClientMetadataController {
   async insertTokenEndpointAuthMethod(@Req() req: Request) {
     return this.clientMetadataService.insertTokenEndpointAuthMethod(req);
   }
+
+  @Get('token-endpoint/:tokenEndpointAuthMethodGuid')
+  async oneTokenEndpointAuthMethod(@Param() params) {
+    return this.clientMetadataService.getTokenEndpointAuthMethod(params.tokenEndpointAuthMethodGuid);
+  }
+
+  @Patch('token-endpoint/update')
+  async updateTokenEndpointAuthMethod(@Req() req) {
+    return this.clientMetadataService.updateTokenEndpointAuthMethod(req);
+  }
+
+  @Delete('token-endpoint/delete/:tokenEndpointAuthMethodGuid')
+  async deleteTokenEndpointAuthMethod(@Param() params) {
+    return this.clientMetadataService.deleteTokenEndpointAuthMethod(params.tokenEndpointAuthMethodGuid);
+  }
 }

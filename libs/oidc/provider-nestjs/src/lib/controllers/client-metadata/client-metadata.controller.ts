@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
+import { Controller, Get, Param, Post, Req, Res, Patch, Delete } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ClientMetadata as OidcClientMetadata } from 'oidc-provider';
 import { ClientMetadataService } from '../../services/client-metadata/client-metadata.service';
@@ -23,6 +23,26 @@ export class ClientMetadataController {
     return this.clientMetadataService.getAllGrantTypes();
   }
 
+  @Get('grant/:grantTypeGuid')
+  async oneGrantTypesGet(@Param() params) {
+    return this.clientMetadataService.getGrantType(params.grantTypeGuid);
+  }
+
+  @Post('grant')
+  async insertGrantTypePost(@Req() req: Request) {
+    return this.clientMetadataService.insertGrantType(req);
+  }
+
+  @Patch('grant/update')
+  async updateExistingGrantType(@Req() req: Request) {
+    return this.clientMetadataService.updateGrantType(req);
+  }
+
+  @Delete('grant/delete/:grantTypeGuid')
+  async deleteGrantType(@Param() params) {
+    return this.clientMetadataService.deleteGrantType(params.grantTypeGuid);
+  }
+
   @Get('response-type')
   async allReponseTypesGet() {
     return this.clientMetadataService.getAllResponseTypes();
@@ -41,11 +61,6 @@ export class ClientMetadataController {
   @Post()
   async insertClientPost(@Req() req: Request) {
     return this.clientMetadataService.insertClientMetadata(req);
-  }
-
-  @Post('grant')
-  async insertGrantTypePost(@Req() req: Request) {
-    return this.clientMetadataService.insertGrantType(req);
   }
 
   @Post('response-type')

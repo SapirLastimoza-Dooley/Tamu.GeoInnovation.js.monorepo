@@ -14,7 +14,7 @@ import {
   TokenEndpointAuthMethodRepo
 } from '../../entities/all.entity';
 import { In } from 'typeorm';
-import { ClientAuthMethod } from 'oidc-provider';
+import * as deepmerge from 'deepmerge';
 
 @Injectable()
 export class ClientMetadataService {
@@ -108,6 +108,36 @@ export class ClientMetadataService {
 
   public async getAllGrantTypes() {
     return this.grantTypeRepo.findAllShallow();
+  }
+
+  public async getGrantType(guid: string) {
+    return this.grantTypeRepo.findOne({
+      where: {
+        guid
+      }
+    });
+  }
+
+  public async updateGrantType(req: Request) {
+    const guid = req.body.guid;
+    const grantType = await this.grantTypeRepo.findOne({
+      where: {
+        guid
+      }
+    });
+    const merged = deepmerge(grantType as Partial<GrantType>, req.body);
+    return this.grantTypeRepo.save(merged);
+  }
+
+  public async deleteGrantType(guid: string) {
+    const grantType = await this.grantTypeRepo.findOne({
+      where: {
+        guid
+      }
+    });
+    if (grantType) {
+      grantType.remove();
+    }
   }
 
   public async insertGrantType(req: Request) {

@@ -806,16 +806,22 @@ export class ClientMetadata extends GuidIdentity {
   })
   public clientSecret: string;
 
-  @ManyToMany((type) => GrantType)
+  @ManyToMany((type) => GrantType, {
+    cascade: true,
+    onDelete: 'CASCADE'
+  })
   @JoinTable({
     name: 'client_metadata_grant_types'
   })
   public grantTypes: GrantType[];
 
-  @OneToMany((type) => RedirectUri, (redirectUri) => redirectUri.clientMetadata, { cascade: true })
+  @OneToMany((type) => RedirectUri, (redirectUri) => redirectUri.clientMetadata)
   redirectUris: RedirectUri[];
 
-  @ManyToMany((type) => ResponseType)
+  @ManyToMany((type) => ResponseType, {
+    cascade: true,
+    onDelete: 'CASCADE'
+  })
   @JoinTable({
     name: 'client_metadata_response_types'
   })
@@ -853,7 +859,10 @@ export class GrantType extends GuidIdentity {
   name: 'redirect_uris'
 })
 export class RedirectUri extends GuidIdentity {
-  @ManyToOne((type) => ClientMetadata, (client) => client.redirectUris)
+  @ManyToOne((type) => ClientMetadata, (client) => client.redirectUris, {
+    cascade: true,
+    onDelete: 'CASCADE'
+  })
   clientMetadata: ClientMetadata;
 
   @Column({

@@ -7,11 +7,6 @@ import { ClientMetadataService } from '../../services/client-metadata/client-met
 export class ClientMetadataController {
   constructor(private readonly clientMetadataService: ClientMetadataService) {}
 
-  @Get()
-  async allClientGet() {
-    return this.clientMetadataService.getAllClients();
-  }
-
   @Get('test')
   async getClientMetadataForOidcSetup() {
     const clients = await this.clientMetadataService.loadClientMetadaForOidcSetup();
@@ -73,11 +68,6 @@ export class ClientMetadataController {
     return this.clientMetadataService.getClient(params.clientName);
   }
 
-  @Post()
-  async insertClientPost(@Req() req: Request) {
-    return this.clientMetadataService.insertClientMetadata(req);
-  }
-
   @Post('response-type')
   async insertResponseTypePost(@Req() req: Request) {
     return this.clientMetadataService.insertResponseType(req);
@@ -101,5 +91,30 @@ export class ClientMetadataController {
   @Delete('token-endpoint/delete/:tokenEndpointAuthMethodGuid')
   async deleteTokenEndpointAuthMethod(@Param() params) {
     return this.clientMetadataService.deleteTokenEndpointAuthMethod(params.tokenEndpointAuthMethodGuid);
+  }
+
+  @Get()
+  async allClientGet() {
+    return this.clientMetadataService.getAllClients();
+  }
+
+  @Get(':clientMetadataGuid')
+  async oneClientMetadataGet(@Param() params) {
+    return this.clientMetadataService.getClientByGuid(params.clientMetadataGuid);
+  }
+
+  @Post()
+  async insertClientPost(@Req() req: Request) {
+    return this.clientMetadataService.insertClientMetadata(req);
+  }
+
+  @Patch('update')
+  async updateClient(@Req() req) {
+    return this.clientMetadataService.updateClientMetadata(req);
+  }
+
+  @Delete('delete/:clientMetadataGuid')
+  async deleteClientMetadata(@Param() params) {
+    return this.clientMetadataService.deleteClientMetadata(params.clientMetadataGuid);
   }
 }

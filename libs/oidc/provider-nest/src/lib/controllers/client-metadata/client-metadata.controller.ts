@@ -63,10 +63,10 @@ export class ClientMetadataController {
     return this.clientMetadataService.getAllTokenEndpointAuthMethods();
   }
 
-  @Get(':clientName')
-  async oneClientGet(@Param() params) {
-    return this.clientMetadataService.getClient(params.clientName);
-  }
+  // @Get(':clientName')
+  // async oneClientGet(@Param() params) {
+  //   return this.clientMetadataService.getClient(params.clientName);
+  // }
 
   @Post('response-type')
   async insertResponseTypePost(@Req() req: Request) {

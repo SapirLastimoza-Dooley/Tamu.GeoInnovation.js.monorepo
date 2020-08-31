@@ -816,7 +816,9 @@ export class ClientMetadata extends GuidIdentity {
   })
   public grantTypes: GrantType[];
 
-  @OneToMany((type) => RedirectUri, (redirectUri) => redirectUri.clientMetadata)
+  @OneToMany((type) => RedirectUri, (redirectUri) => redirectUri.clientMetadata, {
+    cascade: true
+  })
   redirectUris: RedirectUri[];
 
   @ManyToMany((type) => ResponseType, {
@@ -862,7 +864,6 @@ export class GrantType extends GuidIdentity {
 })
 export class RedirectUri extends GuidIdentity {
   @ManyToOne((type) => ClientMetadata, (client) => client.redirectUris, {
-    cascade: true,
     onDelete: 'CASCADE'
   })
   clientMetadata: ClientMetadata;

@@ -246,7 +246,7 @@ export class User extends GuidIdentity {
   @JoinColumn()
   public account: Account;
 
-  @OneToMany((type) => UserRole, (userRole) => userRole.user, { onDelete: 'CASCADE' })
+  @OneToMany((type) => UserRole, (userRole) => userRole.user, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   public userRoles: UserRole[];
 
@@ -914,16 +914,16 @@ export class Role extends GuidIdentity {
   name: 'user_roles'
 })
 export class UserRole extends GuidIdentity {
-  @OneToOne((type) => Role, { cascade: true })
+  @OneToOne((type) => Role)
   @JoinColumn()
   role: Role;
 
   // @ManyToOne((type) => ClientMetadata, (client) => client.guid)
-  @OneToOne((type) => ClientMetadata, { cascade: true, onDelete: 'CASCADE' })
+  @OneToOne((type) => ClientMetadata, { onDelete: 'CASCADE' })
   @JoinColumn()
   client: ClientMetadata;
 
-  @ManyToOne((type) => User, (user) => user.userRoles, { cascade: true })
+  @ManyToOne((type) => User, (user) => user.userRoles)
   user: User;
 }
 
@@ -1159,7 +1159,7 @@ export class TokenEndpointAuthMethodRepo extends CommonRepo<TokenEndpointAuthMet
 
 @EntityRepository(User)
 export class UserRepo extends CommonRepo<User> {
-  public getUserWithRoles(accountGuid: string, clientName: string) {
+  public getUserWithRoles(userGuid: string, clientName: string) {
     return getConnection()
       .getRepository(User)
       .createQueryBuilder('user')
@@ -1167,8 +1167,8 @@ export class UserRepo extends CommonRepo<User> {
       .leftJoinAndSelect('user.userRoles', 'userRoles')
       .leftJoinAndSelect('userRoles.role', 'role')
       .leftJoinAndSelect('userRoles.client', 'client')
-      .where(`account.guid = :accountGuid AND client.clientName = :clientName`, {
-        accountGuid: accountGuid,
+      .where(`user.guid = :userGuid AND client.clientName = :clientName`, {
+        userGuid: userGuid,
         clientName: clientName
       })
       .getOne();

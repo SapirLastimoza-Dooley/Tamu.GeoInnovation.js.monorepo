@@ -918,7 +918,7 @@ export class UserRole extends GuidIdentity {
   role: Role;
 
   // @ManyToOne((type) => ClientMetadata, (client) => client.guid)
-  @OneToOne((type) => ClientMetadata, { cascade: true })
+  @OneToOne((type) => ClientMetadata, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   client: ClientMetadata;
 

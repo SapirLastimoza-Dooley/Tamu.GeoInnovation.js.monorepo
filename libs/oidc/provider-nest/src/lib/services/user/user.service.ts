@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/common';
-import { Connection, getConnection, Repository, Db, UpdateResult } from 'typeorm';
+import { Connection, getConnection, Repository, Db, UpdateResult, Like } from 'typeorm';
 import { Request } from 'express';
 import * as deepmerge from 'deepmerge';
 import { SHA1HashUtils } from '../../_utils/sha1hash.util';
@@ -21,7 +21,8 @@ import {
   UserPasswordHistory,
   UserPasswordResetRepo,
   UserPasswordHistoryRepo,
-  UserPasswordReset
+  UserPasswordReset,
+  INewRole
 } from '../../entities/all.entity';
 
 import { hash, compare } from 'bcrypt';
@@ -82,7 +83,11 @@ export class UserService {
   }
 
   public async getUser(guid: string) {
-    return this.userRepo.findByKeyDeep('guid', guid);
+    return this.userRepo.findOne({
+      where: {
+        guid: guid
+      }
+    });
   }
 
   public async getUserWithRoles(guid: string) {
@@ -269,6 +274,80 @@ export class UserService {
       };
       const update = this.userRoleRepo.create(newUserRole);
       return this.userRoleRepo.save(update);
+    } else {
+      // user does not exist
+      return;
+    }
+  }
+
+  public async updateUserRole(req: Request) {
+    // const existingUser = await this.userRepo.findByKeyDeep('email', req.body.email);
+    const newRole: INewRole = req.body;
+    const userGuid: string = newRole.userGuid;
+    const existingUser = await this.userRepo.findOne({
+      where: {
+        guid: userGuid
+      }
+    });
+    if (existingUser) {
+      debugger;
+      // iterate through userRoles
+      existingUser.userRoles.forEach(async (userRole: UserRole) => {
+        // iterate through newRoles
+        // check if this newRole is equal in clientGuid and roleGuid, if so, return
+        if (newRole.clientGuid === userRole.client.guid && newRole.roleGuid === userRole.role.guid) {
+          return;
+        }
+        // if this newRole is same clientGuid but undefined, then delete it
+        else if (
+          newRole.clientGuid === userRole.client.guid &&
+          newRole.roleGuid !== undefined &&
+          newRole.roleGuid !== 'undefined'
+        ) {
+          debugger;
+          userRole.remove();
+        }
+        // if this newRole is same clientGuid but different roleGuid, update it
+        else if (newRole.clientGuid === userRole.client.guid && newRole.roleGuid !== userRole.role.guid) {
+          debugger;
+          // Get new role
+          const _newRole = await this.roleRepo.findOne({
+            where: {
+              guid: newRole.roleGuid
+            }
+          });
+          debugger;
+          userRole.role = _newRole;
+          userRole.save();
+        }
+        // if this newRole doesn't match any existing clientGuid or roleGuid combos, insert it
+        // else if (newRole.clientGuid !== userRole.client.guid) {
+        //   debugger;
+        //   const roles = await this.roleRepo.findAllShallow();
+        //   const requestedRole = roles.find((value, index) => {
+        //     if (newRole.roleGuid == value.guid) {
+        //       return value;
+        //     }
+        //   });
+        //   const clients = await this.clientMetadataRepo.findAllShallow();
+        //   const requestedClient = clients.find((value, index) => {
+        //     if (newRole.clientGuid == value.guid) {
+        //       return value;
+        //     }
+        //   });
+        //   const newUserRole: Partial<UserRole> = {
+        //     role: requestedRole,
+        //     client: requestedClient,
+        //     user: existingUser
+        //   };
+        //   const update = this.userRoleRepo.create(newUserRole);
+        //   return this.userRoleRepo.save(update);
+        // } else {
+        //   // wtf?
+        //   debugger;
+        // }
+        // });
+      });
     } else {
       // user does not exist
       return;

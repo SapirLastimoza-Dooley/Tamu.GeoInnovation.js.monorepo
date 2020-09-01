@@ -252,7 +252,7 @@ export class User extends GuidIdentity {
   @JoinColumn()
   public account: Account;
 
-  @OneToMany((type) => UserRole, (userRole) => userRole.user, { cascade: true, onDelete: 'CASCADE' })
+  @OneToMany((type) => UserRole, (userRole) => userRole.user, { cascade: true, onDelete: 'CASCADE', eager: true })
   @JoinColumn()
   public userRoles: UserRole[];
 
@@ -920,12 +920,12 @@ export class Role extends GuidIdentity {
   name: 'user_roles'
 })
 export class UserRole extends GuidIdentity {
-  @OneToOne((type) => Role)
+  @OneToOne((type) => Role, { eager: true })
   @JoinColumn()
   role: Role;
 
   // @ManyToOne((type) => ClientMetadata, (client) => client.guid)
-  @OneToOne((type) => ClientMetadata, { onDelete: 'CASCADE' })
+  @OneToOne((type) => ClientMetadata, { onDelete: 'CASCADE', eager: true })
   @JoinColumn()
   client: ClientMetadata;
 

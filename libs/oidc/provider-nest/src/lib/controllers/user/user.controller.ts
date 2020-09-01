@@ -11,7 +11,7 @@ export class UserController {
 
   @Get('one/:userGuid')
   async userGet(@Param() params) {
-    const user = await this.userService.getUserWithRoles(params.userGuid);
+    const user = await this.userService.getUser(params.userGuid);
     if (user) {
       return user;
     } else {
@@ -163,6 +163,15 @@ export class UserController {
   @Post('role')
   async addUserRolePost(@Req() req: Request) {
     this.userService.insertUserRole(req);
+  }
+
+  @Patch('role')
+  async updateUserRolePost(@Req() req: Request) {
+    const joe = req;
+    // this.userService.updateUserRole(req);
+    return {
+      greetings: 'HI'
+    };
   }
 
   @Get('pwr')

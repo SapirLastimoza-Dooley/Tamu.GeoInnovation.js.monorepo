@@ -920,16 +920,13 @@ export class Role extends GuidIdentity {
   name: 'user_roles'
 })
 export class UserRole extends GuidIdentity {
-  @OneToOne((type) => Role, { eager: true })
-  @JoinColumn()
+  @ManyToOne((type) => Role, { eager: true })
   role: Role;
 
-  // @ManyToOne((type) => ClientMetadata, (client) => client.guid)
-  @OneToOne((type) => ClientMetadata, { onDelete: 'CASCADE', eager: true })
-  @JoinColumn()
+  @ManyToOne((type) => ClientMetadata, { eager: true })
   client: ClientMetadata;
 
-  @ManyToOne((type) => User, (user) => user.userRoles)
+  @ManyToOne((type) => User)
   user: User;
 }
 

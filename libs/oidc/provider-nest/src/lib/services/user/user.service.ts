@@ -83,11 +83,13 @@ export class UserService {
   }
 
   public async getUser(guid: string) {
-    return this.userRepo.findOne({
+    const user = await this.userRepo.findOne({
       where: {
         guid: guid
-      }
+      },
+      relations: ['account', 'userRoles']
     });
+    return user;
   }
 
   public async getUserWithRoles(guid: string) {
@@ -269,8 +271,8 @@ export class UserService {
       });
       const newUserRole: Partial<UserRole> = {
         role: requestedRole,
-        client: requestedClient,
-        user: existingUser
+        client: requestedClient
+        // user: existingUser
       };
       const update = this.userRoleRepo.create(newUserRole);
       return this.userRoleRepo.save(update);
@@ -278,6 +280,28 @@ export class UserService {
       // user does not exist
       return;
     }
+  }
+
+  private async insertNewUserRole(newRole: INewRole, existingUser: User) {
+    const roles = await this.roleRepo.findAllShallow();
+    const requestedRole = roles.find((value, index) => {
+      if (newRole.roleGuid == value.guid) {
+        return value;
+      }
+    });
+    const clients = await this.clientMetadataRepo.findAllShallow();
+    const requestedClient = clients.find((value, index) => {
+      if (newRole.clientGuid == value.guid) {
+        return value;
+      }
+    });
+    const newUserRole: Partial<UserRole> = {
+      role: requestedRole,
+      client: requestedClient,
+      user: existingUser
+    };
+    const update = this.userRoleRepo.create(newUserRole);
+    return this.userRoleRepo.save(update);
   }
 
   public async updateUserRole(req: Request) {
@@ -290,12 +314,18 @@ export class UserService {
       }
     });
     if (existingUser) {
-      debugger;
+      if (existingUser.userRoles.length === 0) {
+        if (newRole.roleGuid !== 'undefined' && newRole.roleGuid !== undefined) {
+          this.insertNewUserRole(newRole, existingUser);
+        } else {
+          console.log('Skipping this since the roleGuid is undefined');
+        }
+      }
       // iterate through userRoles
       existingUser.userRoles.forEach(async (userRole: UserRole) => {
-        // iterate through newRoles
         // check if this newRole is equal in clientGuid and roleGuid, if so, return
         if (newRole.clientGuid === userRole.client.guid && newRole.roleGuid === userRole.role.guid) {
+          console.log('Existing client / role combo', newRole);
           return;
         }
         // if this newRole is same clientGuid but undefined, then delete it
@@ -305,10 +335,12 @@ export class UserService {
           newRole.roleGuid !== 'undefined'
         ) {
           debugger;
+          console.log('Removing existing role', newRole);
           userRole.remove();
         }
         // if this newRole is same clientGuid but different roleGuid, update it
         else if (newRole.clientGuid === userRole.client.guid && newRole.roleGuid !== userRole.role.guid) {
+          console.log('Existing client / role combo, updating', newRole);
           debugger;
           // Get new role
           const _newRole = await this.roleRepo.findOne({
@@ -319,6 +351,16 @@ export class UserService {
           debugger;
           userRole.role = _newRole;
           userRole.save();
+        } else if (newRole.clientGuid !== userRole.client.guid) {
+          console.log(`newRole does not match this current ${userRole.client.clientName}`, newRole);
+          if (newRole.roleGuid !== 'undefined' && newRole.roleGuid !== undefined) {
+            this.insertNewUserRole(newRole, existingUser);
+          } else {
+            console.log('Skipping this since the roleGuid is undefined');
+          }
+        } else {
+          //
+          debugger;
         }
         // if this newRole doesn't match any existing clientGuid or roleGuid combos, insert it
         // else if (newRole.clientGuid !== userRole.client.guid) {

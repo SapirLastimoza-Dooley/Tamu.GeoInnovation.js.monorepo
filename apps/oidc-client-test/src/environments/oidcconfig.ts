@@ -8,6 +8,14 @@ export const OIDC_CLIENT_METADATA: ClientMetadata = {
   token_endpoint_auth_method: 'client_secret_basic'
 };
 
+export const KOTH_CLIENT_METADATA: ClientMetadata = {
+  client_id: 'king_of_the_hill',
+  client_secret: 'hoeyeah',
+  redirect_uris: ['http://localhost:3001/oidc/auth/callback'],
+  response_types: ['code'],
+  token_endpoint_auth_method: 'client_secret_basic'
+};
+
 export const OIDC_CLIENT_METADATA_AD: ClientMetadata = {
   client_id: 'b749fe37-b419-435d-b9e0-10aaf0d805cd',
   client_secret: 'xNp1t3cR~9E3KD_8ro~o2Fjuq.8rZTdGk.',

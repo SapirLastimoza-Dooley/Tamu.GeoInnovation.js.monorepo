@@ -18,7 +18,7 @@ import {
   User,
   InteractionModule,
   UserModule,
-  ClientMetadataModule,
+  // ClientMetadataModule,
   ClientMetadata,
   GrantType,
   ClientMetadataRepo,
@@ -42,6 +42,8 @@ import {
   PushedAuthorizationRequest,
   ReplayDetection
 } from '@tamu-gisc/oidc/provider-nestjs';
+
+import { ClientMetadataModule } from '@tamu-gisc/oidc/admin-nest';
 
 import { dbConfig } from '../environments/environment';
 

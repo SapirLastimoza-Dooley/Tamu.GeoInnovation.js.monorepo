@@ -1,7 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app/app.module';
-import { OpenIdProvider, ClientMetadataModule, ClientMetadataService } from '@tamu-gisc/oidc/provider-nest';
+import { OpenIdProvider } from '@tamu-gisc/oidc/provider-nest';
+import { ClientMetadataModule, ClientMetadataService } from '@tamu-gisc/oidc/admin-nest';
 import { Provider } from 'oidc-provider';
 import * as express from 'express';
 import * as csurf from 'csurf';
@@ -20,7 +21,7 @@ async function bootstrap() {
   const clientsService = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
   const clients = await clientsService.loadClientMetadaForOidcSetup();
   OpenIdProvider.build(clients);
-  // enableOIDCDebug(OpenIdProvider.provider);
+  enableOIDCDebug(OpenIdProvider.provider);
   OpenIdProvider.provider.proxy = true;
   const dir = join(__dirname, 'assets/views');
   app.use(helmet());

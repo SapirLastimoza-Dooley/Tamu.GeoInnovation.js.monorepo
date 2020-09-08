@@ -13,9 +13,9 @@ export class AdminRoleGuard implements CanActivate {
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const isAuthed = request.isAuthenticated();
-    const tokenIntrospectionResult = await OpenIdClient.client.introspect(request.user.access_token);
     let canProceed = false;
     if (isAuthed) {
+      const tokenIntrospectionResult = await OpenIdClient.client.introspect(request.user.access_token);
       if (tokenIntrospectionResult.active) {
         if (request.user) {
           if (request.user.role) {
@@ -43,9 +43,9 @@ export class ManagerRoleGuard implements CanActivate {
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const isAuthed = request.isAuthenticated();
-    const tokenIntrospectionResult = await OpenIdClient.client.introspect(request.user.access_token);
     let canProceed = false;
     if (isAuthed) {
+      const tokenIntrospectionResult = await OpenIdClient.client.introspect(request.user.access_token);
       if (tokenIntrospectionResult.active) {
         if (request.user.claims) {
           if (request.user.role) {

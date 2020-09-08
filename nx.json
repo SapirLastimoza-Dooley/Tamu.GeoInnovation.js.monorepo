@@ -313,6 +313,9 @@
     },
     "oidc-admin-nest": {
       "tags": []
+    },
+    "oidc-utils": {
+      "tags": []
     }
   }
 }

@@ -72,9 +72,6 @@ export class OidcAdapter {
 
   async upsert(id: KindOfId, payload: any, expiresIn: number) {
     const key = this.key(id);
-    if (this.name === 'AuthorizationCode') {
-      debugger;
-    }
     const repo = this.connection.getRepository(this.repository);
     if (repo) {
       await repo
@@ -96,9 +93,6 @@ export class OidcAdapter {
   }
 
   async find(id: string) {
-    if (this.name === 'AuthorizationCode') {
-      debugger;
-    }
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
     const found: IRequiredEntityAttrs = await repo.findOne(id);
     if (!found) {
@@ -113,9 +107,6 @@ export class OidcAdapter {
           }
         : undefined)
     };
-    if (this.name === 'AuthorizationCode') {
-      debugger;
-    }
     return token;
   }
 

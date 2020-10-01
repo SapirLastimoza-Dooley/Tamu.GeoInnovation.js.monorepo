@@ -16,6 +16,8 @@ import {
   RegistrationAccessToken,
   Session,
   TypeORMEntities,
+  ReplayDetection,
+  PushedAuthorizationRequest,
   User
 } from '../entities/all.entity';
 
@@ -39,7 +41,9 @@ export class OidcAdapter {
     Client,
     InitialAccessToken,
     Interaction,
-    RegistrationAccessToken
+    RegistrationAccessToken,
+    ReplayDetection,
+    PushedAuthorizationRequest
   };
   public grantable: Set<string> = new Set(['AccessToken', 'AuthorizationCode', 'RefreshToken', 'DeviceCode']);
   /**
@@ -68,7 +72,9 @@ export class OidcAdapter {
 
   async upsert(id: KindOfId, payload: any, expiresIn: number) {
     const key = this.key(id);
-
+    if (this.name === 'AuthorizationCode') {
+      debugger;
+    }
     const repo = this.connection.getRepository(this.repository);
     if (repo) {
       await repo
@@ -77,6 +83,7 @@ export class OidcAdapter {
           data: JSON.stringify(payload),
           grantId: payload.grantId ? payload.grantId : undefined,
           uid: payload.uid ? payload.uid : undefined,
+          clientId: payload.clientId ? payload.clientId : undefined,
           userCode: payload.userCode ? payload.userCode : undefined,
           expiresAt: expiresIn ? new Date(Date.now() + expiresIn * 1000).toISOString() : undefined
         })
@@ -87,6 +94,9 @@ export class OidcAdapter {
   }
 
   async find(id: string) {
+    if (this.name === 'AuthorizationCode') {
+      debugger;
+    }
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
     const found: IRequiredEntityAttrs = await repo.findOne(id);
     if (!found) {
@@ -101,6 +111,9 @@ export class OidcAdapter {
           }
         : undefined)
     };
+    if (this.name === 'AuthorizationCode') {
+      debugger;
+    }
     return token;
   }
 

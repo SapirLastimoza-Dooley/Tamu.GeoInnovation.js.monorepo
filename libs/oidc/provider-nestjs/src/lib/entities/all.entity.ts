@@ -236,14 +236,11 @@ export class Account extends GuidIdentity implements IAccount {
   name: 'user'
 })
 export class User extends GuidIdentity {
-  // @PrimaryGeneratedColumn()
-  // id: number;
-
   @Column({
-    type: 'text',
+    type: 'datetime',
     nullable: true
   })
-  added: string;
+  added: Date;
 
   @OneToOne((type) => Account, { cascade: true })
   @JoinColumn()
@@ -273,10 +270,10 @@ export class User extends GuidIdentity {
   password: string;
 
   @Column({
-    type: 'varchar',
+    type: 'datetime',
     nullable: true
   })
-  updatedAt?: string;
+  updatedAt?: Date;
 
   @Column({
     type: 'bit',
@@ -330,8 +327,8 @@ export class User extends GuidIdentity {
             this.signup_ip_address = body.ip;
             this.last_used_ip_address = body.ip;
           }
-          this.updatedAt = new Date().toISOString();
-          this.added = new Date().toISOString();
+          this.updatedAt = new Date();
+          this.added = new Date();
         }
       }
     } catch (err) {
@@ -365,17 +362,32 @@ export class AccessToken implements IRequiredEntityAttrs {
 
   @Column({
     type: 'varchar',
+    nullable: true,
+    length: '128'
+  })
+  clientId: string;
+
+  @Column({
+    type: 'datetime',
     nullable: true
   })
   expiresAt: Date;
 
   @Column({
-    type: 'varchar',
+    type: 'datetime',
     nullable: true
   })
   consumedAt: Date;
 
-  constructor() {}
+  @Column({
+    type: 'datetime',
+    nullable: true
+  })
+  added?: Date;
+
+  constructor() {
+    this.added = new Date();
+  }
 }
 
 @Entity({
@@ -1047,7 +1059,7 @@ export class CommonRepo<T> extends Repository<T> {
       .getOne();
   }
 
-  public async findByKeyDeep<K extends keyof T>(key: K, value: unknown) {
+  public async findByKeyDeep<K extends keyof T>(key: K, value: unknown, includeExludedProps?: boolean, excludedProp?: K) {
     const op = {
       [key]: value
     };
@@ -1058,6 +1070,9 @@ export class CommonRepo<T> extends Repository<T> {
       relatedProps.map((propName) => {
         queryBuilder.leftJoinAndSelect(`entity.${propName}`, propName);
       });
+    }
+    if (includeExludedProps === true) {
+      queryBuilder.addSelect([`entity.${excludedProp}`]);
     }
     return queryBuilder.where(`entity.${key} = :${key}`, op).getOne();
   }
@@ -1154,3 +1169,6 @@ export class UserPasswordResetRepo extends CommonRepo<UserPasswordReset> {}
 
 @EntityRepository(UserPasswordHistory)
 export class UserPasswordHistoryRepo extends CommonRepo<UserPasswordHistory> {}
+
+@EntityRepository(AccessToken)
+export class AccessTokenRepo extends CommonRepo<AccessToken> {}

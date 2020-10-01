@@ -138,7 +138,7 @@ export class UserService {
    * @memberof UserService
    */
   public async userLogin(email: string, password: string) {
-    const userWithAccount = await this.userRepo.findByKeyDeep('email', email);
+    const userWithAccount = await this.userRepo.findByKeyDeep('email', email, true, 'password');
     if (userWithAccount) {
       const same = await compare(password, userWithAccount.password);
       if (same) {
@@ -435,7 +435,7 @@ export class UserService {
    */
   private async updateUserPassword(req: Request, user: User) {
     user.password = await hash(req.body.newPassword, SHA1HashUtils.SALT_ROUNDS);
-    user.updatedAt = new Date().toISOString();
+    user.updatedAt = new Date();
     this.userRepo.save(user);
     Mailer.sendPasswordResetConfirmationEmail(user.email);
     const _newUsedPassword: Partial<UserPasswordHistory> = {

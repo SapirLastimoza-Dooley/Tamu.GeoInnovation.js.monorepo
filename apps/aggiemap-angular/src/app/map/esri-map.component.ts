@@ -51,7 +51,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
           }
         },
         view: {
-          mode: '2d',
+          mode: '3d',
           properties: {
             // container: this.mapViewEl.nativeElement,
             map: undefined, // Reference to the map object created before the scene
@@ -59,10 +59,10 @@ export class EsriMapComponent implements OnInit, OnDestroy {
             spatialReference: {
               wkid: 102100
             },
-            constraints: {
-              minScale: 100000, // minZoom is the max you can zoom OUT into space
-              maxScale: 0 // maxZoom is the max you can zoom INTO the ground
-            },
+            // constraints: {
+            //   minScale: 100000, // minZoom is the max you can zoom OUT into space
+            //   maxScale: 0 // maxZoom is the max you can zoom INTO the ground
+            // },
             zoom: 16,
             ui: {
               components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']

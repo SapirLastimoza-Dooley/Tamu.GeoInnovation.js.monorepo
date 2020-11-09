@@ -325,6 +325,9 @@
     },
     "cpa-public": {
       "tags": []
+    },
+    "cpa-sass": {
+      "tags": []
     }
   }
 }

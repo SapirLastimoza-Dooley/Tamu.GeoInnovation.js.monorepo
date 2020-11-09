@@ -316,6 +316,15 @@
     },
     "ues-effluent-data-api-nest": {
       "tags": []
+    },
+    "cpa-data-access": {
+      "tags": []
+    },
+    "cpa-admin": {
+      "tags": []
+    },
+    "cpa-public": {
+      "tags": []
     }
   }
 }

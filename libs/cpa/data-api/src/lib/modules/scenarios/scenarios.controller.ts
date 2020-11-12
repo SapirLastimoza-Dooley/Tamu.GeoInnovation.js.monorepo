@@ -17,7 +17,7 @@ export class ScenariosController extends BaseController<Scenario> {
    * Updates an existing scenario
    */
   @Patch(':guid')
-  public async update(@Param() params: IScenariosRequestPayload, @Body() body: IScenariosRequestPayload) {
+  public async update(@Param() params: ISnapshotsRequestPayload, @Body() body: ISnapshotsRequestPayload) {
     return await this.service.repository.update({ guid: params.guid }, { ...body });
   }
 
@@ -25,13 +25,13 @@ export class ScenariosController extends BaseController<Scenario> {
    * Deletes an existing scenario
    */
   @Delete(':guid')
-  public async delete(@Param() params: IScenariosRequestPayload) {
+  public async delete(@Param() params: ISnapshotsRequestPayload) {
     return await this.service.repository.delete({ guid: params.guid });
   }
 }
 
-export interface IScenariosRequestPayload extends DeepPartial<Scenario> {}
+export interface ISnapshotsRequestPayload extends DeepPartial<Scenario> {}
 
-export interface IScenariosResponse extends Omit<DeepPartial<Scenario>, 'layers'> {
+export interface ISnapshotsResponse extends Omit<DeepPartial<Scenario>, 'layers'> {
   layers: { url: string; info: ILayerConfiguration }[];
 }

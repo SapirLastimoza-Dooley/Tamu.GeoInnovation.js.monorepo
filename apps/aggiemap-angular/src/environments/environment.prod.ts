@@ -34,7 +34,7 @@ export const LayerSources: LayerSource[] = [
     type: 'scene',
     id: 'test-buildings-layer',
     title: 'Test 3D Buildings',
-    url: 'https://arcportal.ts.tamu.edu/arcgis/rest/services/Hosted/3D_Buildings_Test_WSL1/SceneServer/layers/0',
+    url: 'https://arcportal.ts.tamu.edu/arcgis/rest/services/Hosted/3D_Presentation_Test_1_WSL1/SceneServer/layers/0',
     popupComponent: d.BUILDINGS.popupComponent,
     listMode: 'show',
     loadOnInit: true,
